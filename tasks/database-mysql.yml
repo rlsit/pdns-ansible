@@ -13,6 +13,9 @@
     name:
       - default-mysql-client
       - python-mysqldb
+      - python3-mysqldb
+      - python-pymysql
+      - python3-pymysql
     state: present
   when: ansible_os_family == 'Debian'
 
@@ -20,8 +23,9 @@
   mysql_db:
     login_user: "{{ item['value']['priv_user'] }}"
     login_password: "{{ item['value']['priv_password'] }}"
-    login_host: "{{ item['value']['host'] }}"
-    login_port: "{{ item['value']['port'] | default('3306') }}"
+    #login_host: "{{ item['value']['host'] }}"
+    #login_port: "{{ item['value']['port'] | default('3306') }}"
+    login_unix_socket: /run/mysqld/mysqld.sock
     name: "{{ item['value']['dbname'] }}"
     state: present
   when: "item.key.split(':')[0] == 'gmysql'"
@@ -31,8 +35,9 @@
   mysql_user:
     login_user: "{{ item[0]['priv_user'] }}"
     login_password: "{{ item[0]['priv_password'] }}"
-    login_host: "{{ item[0]['host'] }}"
-    login_port: "{{ item[0]['port'] | default('3306') }}"
+    #login_host: "{{ item[0]['host'] }}"
+    #login_port: "{{ item[0]['port'] | default('3306') }}"
+    login_unix_socket: /run/mysqld/mysqld.sock
     name: "{{ item[0]['user'] }}"
     password: "{{ item[0]['password'] }}"
     host: "{{ item[1] }}"
@@ -93,8 +98,9 @@
   mysql_db:
     login_user: "{{ item['item']['value']['user'] }}"
     login_password: "{{ item['item']['value']['password'] }}"
-    login_host: "{{ item['item']['value']['host'] }}"
-    login_port: "{{ item['item']['port'] | default('3306') }}"
+    #login_host: "{{ item['item']['value']['host'] }}"
+    #login_port: "{{ item['item']['port'] | default('3306') }}"
+    login_unix_socket: /run/mysqld/mysqld.sock
     name: "{{ item.item['value']['dbname'] }}"
     state: import
     target: "{{ _pdns_mysql_schema_file }}"
